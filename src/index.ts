@@ -1,5 +1,5 @@
 import {fromEvent} from "rxjs";
-import {tap, debounceTime, map, pluck, filter, mergeAll} from "rxjs/operators";
+import {tap, debounceTime, map, pluck, filter, mergeAll, distinctUntilChanged} from "rxjs/operators";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './custom.css';
 
@@ -8,8 +8,8 @@ const searchQuery$ = fromEvent(searchBox, 'keyup')
     .pipe(
         debounceTime(1000),
         pluck('target', 'value'),
-        filter(value => value != '')
-        // TODO protect from keyup that results in the same value as before
+        filter(value => value != ''),
+        distinctUntilChanged()
     )
 ;
 
@@ -19,11 +19,10 @@ const liveSearch$ = searchQuery$.pipe(
     tap(q => console.log(`Query: ${q}`)),
     map(q => searchRepository(<string>q)),
     mergeAll(),
-    tap(result => console.log(result)),
-    tap(result => render(result))
+    tap(result => console.log(result))
 );
 
-liveSearch$.subscribe();
+liveSearch$.subscribe(render);
 
 type SearchRepoResult = {
     items: {
