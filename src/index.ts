@@ -24,19 +24,19 @@ const liveSearch$ = searchQuery$.pipe(
 
 liveSearch$.subscribe(render);
 
-type SearchRepoResult = {
-    items: {
-        full_name: string,
-        description: string
-        html_url: string,
-        forks: number,
-        score: number,
-        owner: {
-            login: string,
-            avatar_url: string
-        }
-    }[]
+type ResultItem = {
+    full_name: string,
+    description: string
+    html_url: string,
+    forks: number,
+    score: number,
+    owner: {
+        login: string,
+        avatar_url: string
+    }
 };
+
+type SearchRepoResult = {items: ResultItem[]};
 
 const output = document.getElementById('output') as HTMLDivElement;
 
